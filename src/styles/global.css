@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-behaviour-smooth;
+  }
+}
+
+@layer utilities {
+  .scroll-behaviour-smooth {
+    scroll-behavior: smooth;
+  }
+
+  .grid-area-container {
+    grid-template-areas: 'single';
+  }
+
+  .grid-area {
+    grid-area: single;
+  }
+}
