@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://app.netlify.com/sites/p1t1ch-fm-todo-app/deploys">
     <img
-      src="https://api.netlify.com/api/v1/badges/289355cc-ded7-49d3-a4a9-945f60bcc799/deploy-status"
+      src="https://api.netlify.com/api/v1/badges/35ae4493-ee08-48a2-8c83-f1e12d3ee8e9/deploy-status"
       alt="Netlify Status"
     />
   </a>
