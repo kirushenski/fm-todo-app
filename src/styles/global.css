@@ -10,6 +10,12 @@
   body {
     @apply text-lg bg-light-gray-100 dark:bg-dark-gray-900 text-light-gray-500 dark:text-dark-gray-200;
   }
+
+  svg {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+  }
 }
 
 @layer utilities {
