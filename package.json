@@ -43,6 +43,7 @@
     "last 2 iOS major versions"
   ],
   "dependencies": {
+    "@fontsource/josefin-sans": "^4.1.1",
     "@svgr/webpack": "^5.5.0",
     "autoprefixer": "^10.2.1",
     "focus-visible": "^5.2.0",
