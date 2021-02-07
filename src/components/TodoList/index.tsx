@@ -1,9 +1,16 @@
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-// import { ReactComponent as CheckIcon } from '@/icons/icon-check.svg'
+import { ReactComponent as CheckIcon } from '@/icons/icon-check.svg'
 import { ReactComponent as CrossIcon } from '@/icons/icon-cross.svg'
 
-// TODO: добавить склонения к items
+// TODO пустой стейт
+// TODO dark mode
+// TODO local storage
+// TODO алерты
+// TODO focus management on clear
+// TODO склонения к items
+// TODO DnD
+// TODO state management solutions
 
 interface Todo {
   id: string
@@ -48,22 +55,28 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
     setTodos(todos.filter(todo => !todo.isCompleted))
   }
 
+  function handleTextChange(e: React.FocusEvent<HTMLDivElement>, selectedTodo: Todo) {
+    setTodos(todos.map(todo => (todo === selectedTodo ? { ...todo, value: e.target.innerText } : todo)))
+  }
+
   return (
     <div className={`${className}`} {...props}>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="new-todo" className="sr-only">
-          Create a new todo
+      <form onSubmit={handleSubmit} className="content-block mb-6">
+        <label className="flex items-center">
+          <span className="sr-only">Create a new todo</span>
+          <div className="py-4 px-5 sm:py-5 sm:px-6">
+            <div className="circle" />
+          </div>
+          <input
+            type="text"
+            value={value}
+            onChange={handleInputChange}
+            placeholder="Create a new todo..."
+            className="flex-grow py-4 pr-5 sm:py-5 sm:pr-6 text-dark-gray-700 dark:text-dark-gray-200 placeholder-light-gray-400 dark:placeholder-dark-gray-300 leading-6"
+          />
         </label>
-        <input
-          type="text"
-          id="new-todo"
-          value={value}
-          onChange={handleInputChange}
-          placeholder="Create a new todo..."
-          className="bg-white dark:bg-dark-gray-800"
-        />
       </form>
-      <div className="bg-white dark:bg-dark-gray-800">
+      <div className="content-block">
         <ol>
           {todos
             .filter(
@@ -73,35 +86,69 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
                 (currentFilter === 'completed' && todo.isCompleted)
             )
             .map(todo => (
-              <li key={todo.id}>
-                <label>
-                  <input type="checkbox" checked={todo.isCompleted} onChange={() => handleCheckboxChange(todo)} />
+              <li
+                key={todo.id}
+                className="group border-b border-light-gray-200 dark:border-dark-gray-700 flex items-center"
+              >
+                <input
+                  type="checkbox"
+                  checked={todo.isCompleted}
+                  onChange={() => handleCheckboxChange(todo)}
+                  className="sr-only"
+                />
+                <label className="py-4 px-5 sm:py-5 sm:px-6 text-check cursor-pointer">
                   <span className="sr-only">Complete &quot;{todo.value}&quot;</span>
+                  <div className="circle">{todo.isCompleted && <CheckIcon />}</div>
                 </label>
-                <div>{todo.value}</div>
-                <button onClick={() => handleClearButtonClick(todo)}>
+                <div
+                  className={`py-4 sm:py-5 flex-grow leading-6 ${
+                    todo.isCompleted ? 'line-through text-light-gray-300 dark:text-dark-gray-500' : ''
+                  }`}
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={e => handleTextChange(e, todo)}
+                >
+                  {todo.value}
+                </div>
+                <button
+                  onClick={() => handleClearButtonClick(todo)}
+                  className="py-5 sm:py-cross px-5 sm:px-6 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity dark:text-dark-gray-400"
+                >
                   <CrossIcon title={`Clear "${todo.value}"`} />
                 </button>
               </li>
             ))}
         </ol>
-        <div>
-          <div>{todos.filter(todo => !todo.isCompleted).length} items left</div>
-          <div>
+        <div className="flex flex-wrap sm:items-center justify-between sm:justify-start px-5 sm:px-6 text-xs sm:text-sm text-light-gray-400 dark:text-dark-gray-400">
+          <div className="pt-4 sm:pt-0 leading-none">{todos.filter(todo => !todo.isCompleted).length} items left</div>
+          <div className="order-2 sm:order-none flex-grow flex justify-center text-sm font-bold leading-none">
             {FILTERS.map(filter => (
-              <label key={filter}>
+              <React.Fragment key={filter}>
                 <input
                   type="radio"
                   name="filter"
+                  id={filter}
                   value={filter}
                   checked={filter === currentFilter}
                   onChange={() => handleFilterChange(filter)}
+                  className="sr-only"
                 />
-                {filter.toUpperCase()}
-              </label>
+                <label
+                  htmlFor={filter}
+                  className="block px-2 pt-4 pb-5 hover:text-light-gray-500 dark:hover:text-dark-gray-100 cursor-pointer"
+                >
+                  {filter[0].toUpperCase()}
+                  {filter.slice(1)}
+                </label>
+              </React.Fragment>
             ))}
           </div>
-          <button onClick={handleClearCompletedButtonClick}>Clear Completed</button>
+          <button
+            onClick={handleClearCompletedButtonClick}
+            className="order-1 sm:order-none pb-2 pt-4 sm:pb-5 hover:text-light-gray-500 focus-visible:text-light-gray-500 dark:hover:text-dark-gray-100 leading-none"
+          >
+            Clear Completed
+          </button>
         </div>
       </div>
     </div>

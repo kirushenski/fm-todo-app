@@ -13,9 +13,9 @@ module.exports = {
       light: {
         'gray-100': '#FAFAFA',
         'gray-200': '#E3E4F1',
-        'gray-500': '#494C6B',
-        'gray-400': '#9495A5',
         'gray-300': '#D1D2DA',
+        'gray-400': '#9495A5',
+        'gray-500': '#494C6B',
       },
       dark: {
         'gray-100': '#E3E4F1',
@@ -29,6 +29,7 @@ module.exports = {
         'gray-900': '#171823',
       },
       white: '#FFF',
+      transparent: 'transparent',
     },
     extend: {
       fontFamily: {
@@ -37,6 +38,7 @@ module.exports = {
       fontSize: {
         heading: ['2.5rem', 1.2],
         icon: ['1.625rem', 1],
+        check: ['0.6875rem', 1],
       },
       letterSpacing: {
         heading: '.375em',
@@ -47,13 +49,25 @@ module.exports = {
         'dark-desktop': 'url(../images/bg-desktop-dark.jpg)',
         'dark-mobile': 'url(../images/bg-mobile-dark.jpg)',
       },
-      backgroundSize: {
-        desktop: '100% 300px',
-        mobile: '100% 200px',
-      },
       maxWidth: {
         container: '33.75rem',
       },
+      borderRadius: {
+        main: '5px',
+      },
+      boxShadow: {
+        light: '0px 35px 50px -15px rgba(194, 195, 214, 0.5)',
+        dark: '0px 35px 50px -15px rgba(0, 0, 0, 0.5)',
+      },
+      padding: {
+        cross: '1.4375rem',
+      },
+    },
+  },
+  variants: {
+    extend: {
+      textColor: ['focus-visible'],
+      boxShadow: ['dark'],
     },
   },
 }

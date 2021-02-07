@@ -8,16 +8,16 @@ function IndexPage() {
   const [colorScheme, setColorScheme] = useState('light')
 
   return (
-    <div className="min-h-screen px-6 py-12 bg-light-mobile dark:bg-dark-mobile sm:bg-light-desktop dark:sm:bg-dark-desktop bg-no-repeat bg-mobile sm:bg-desktop">
+    <div className="min-h-screen px-6 py-12 bg-light-mobile dark:bg-dark-mobile sm:bg-light-desktop dark:sm:bg-dark-desktop bg-no-repeat bg-contain">
       <Seo title="Frontend Mentor: Todo app" />
       <main className="max-w-container mx-auto">
         <div className="flex justify-between items-center mb-10">
-          <h1 className="uppercase font-bold text-xl sm:text-heading tracking-heading text-white">Todo</h1>
+          <h1 className="uppercase font-bold text-xl sm:text-heading tracking-heading text-white leading-none">Todo</h1>
           <button
             onClick={() => setColorScheme(colorScheme === 'dark' ? 'light' : 'dark')}
             aria-label="Dark mode"
             aria-pressed={colorScheme === 'dark'}
-            className="text-white text-xl sm:text-icon"
+            className="text-white text-xl sm:text-icon focus-visible:text-dark-gray-800 transition-colors"
           >
             {colorScheme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>

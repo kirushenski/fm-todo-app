@@ -8,13 +8,43 @@
   }
 
   body {
-    @apply text-lg bg-light-gray-100 dark:bg-dark-gray-900 text-light-gray-500 dark:text-dark-gray-200;
+    @apply text-xs sm:text-lg bg-light-gray-100 dark:bg-dark-gray-900 text-light-gray-500 dark:text-dark-gray-200;
   }
 
   svg {
     width: 1em;
     height: 1em;
     fill: currentColor;
+  }
+
+  input:focus,
+  button:focus,
+  [contenteditable]:focus {
+    @apply outline-none;
+  }
+
+  input {
+    caret-color: #3a7cfd;
+  }
+
+  input[type='checkbox']:checked + label .circle {
+    @apply bg-gradient-to-br from-primary-start to-primary-end;
+  }
+
+  input[type='checkbox']:not(:checked):focus + label .circle,
+  input[type='checkbox']:not(:checked) + label:hover .circle {
+    background-image: linear-gradient(#fff, #fff), linear-gradient(to bottom right, #55ddff, #c058f3);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    @apply border border-transparent;
+  }
+
+  input[type='radio']:checked + label {
+    @apply text-primary-blue;
+  }
+
+  input[type='radio']:focus + label {
+    @apply text-light-gray-500 dark:text-dark-gray-100;
   }
 }
 
@@ -29,5 +59,13 @@
 
   .grid-area {
     grid-area: single;
+  }
+
+  .circle {
+    @apply grid place-items-center w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-light-gray-200 dark:border-dark-gray-700;
+  }
+
+  .content-block {
+    @apply overflow-hidden bg-white dark:bg-dark-gray-800 rounded-main shadow-light dark:shadow-dark;
   }
 }
