@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { ReactComponent as CheckIcon } from '@/icons/icon-check.svg'
 import { ReactComponent as CrossIcon } from '@/icons/icon-cross.svg'
 
-// TODO пустой стейт
 // TODO dark mode
 // TODO local storage
 // TODO алерты
@@ -11,6 +10,7 @@ import { ReactComponent as CrossIcon } from '@/icons/icon-cross.svg'
 // TODO склонения к items
 // TODO DnD
 // TODO state management solutions
+// TODO performance optimization
 
 interface Todo {
   id: string
@@ -27,6 +27,12 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
   ])
   const [value, setValue] = useState('')
   const [currentFilter, setCurrentFilter] = useState<typeof FILTERS[number]>('all')
+  const filteredTodos = todos.filter(
+    todo =>
+      currentFilter === 'all' ||
+      (currentFilter === 'active' && !todo.isCompleted) ||
+      (currentFilter === 'completed' && todo.isCompleted)
+  )
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value)
@@ -77,26 +83,21 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
         </label>
       </form>
       <div className="content-block">
-        <ol>
-          {todos
-            .filter(
-              todo =>
-                currentFilter === 'all' ||
-                (currentFilter === 'active' && !todo.isCompleted) ||
-                (currentFilter === 'completed' && todo.isCompleted)
-            )
-            .map(todo => (
+        {filteredTodos.length ? (
+          <ol>
+            {filteredTodos.map(todo => (
               <li
                 key={todo.id}
                 className="group border-b border-light-gray-200 dark:border-dark-gray-700 flex items-center"
               >
                 <input
                   type="checkbox"
+                  id={todo.id}
                   checked={todo.isCompleted}
                   onChange={() => handleCheckboxChange(todo)}
                   className="sr-only"
                 />
-                <label className="py-4 px-5 sm:py-5 sm:px-6 text-check cursor-pointer">
+                <label htmlFor={todo.id} className="py-4 px-5 sm:py-5 sm:px-6 text-check cursor-pointer">
                   <span className="sr-only">Complete &quot;{todo.value}&quot;</span>
                   <div className="circle">{todo.isCompleted && <CheckIcon />}</div>
                 </label>
@@ -106,6 +107,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
                   }`}
                   contentEditable
                   suppressContentEditableWarning
+                  spellCheck={false}
                   onBlur={e => handleTextChange(e, todo)}
                 >
                   {todo.value}
@@ -118,7 +120,17 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
                 </button>
               </li>
             ))}
-        </ol>
+          </ol>
+        ) : (
+          <div className="py-4 px-5 sm:py-5 sm:px-6 text-center border-b border-light-gray-200 dark:border-dark-gray-700 leading-6">
+            You don&apos;t have{' '}
+            {todos.length && currentFilter === 'active'
+              ? 'active todos left. Well done!'
+              : todos.length && currentFilter === 'completed'
+              ? 'completed todos yet. Just do it!'
+              : 'any todos. Try to add one!'}
+          </div>
+        )}
         <div className="flex flex-wrap sm:items-center justify-between sm:justify-start px-5 sm:px-6 text-xs sm:text-sm text-light-gray-400 dark:text-dark-gray-400">
           <div className="pt-4 sm:pt-0 leading-none">{todos.filter(todo => !todo.isCompleted).length} items left</div>
           <div className="order-2 sm:order-none flex-grow flex justify-center text-sm font-bold leading-none">
@@ -135,7 +147,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
                 />
                 <label
                   htmlFor={filter}
-                  className="block px-2 pt-4 pb-5 hover:text-light-gray-500 dark:hover:text-dark-gray-100 cursor-pointer"
+                  className="block px-2 pt-4 pb-5 hover:text-light-gray-500 dark:hover:text-dark-gray-100 cursor-pointer transition-colors"
                 >
                   {filter[0].toUpperCase()}
                   {filter.slice(1)}
@@ -145,7 +157,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
           </div>
           <button
             onClick={handleClearCompletedButtonClick}
-            className="order-1 sm:order-none pb-2 pt-4 sm:pb-5 hover:text-light-gray-500 focus-visible:text-light-gray-500 dark:hover:text-dark-gray-100 leading-none"
+            className="order-1 sm:order-none pb-2 pt-4 sm:pb-5 hover:text-light-gray-500 focus-visible:text-light-gray-500 dark:hover:text-dark-gray-100 leading-none transition-colors"
           >
             Clear Completed
           </button>

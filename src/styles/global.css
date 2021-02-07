@@ -43,7 +43,7 @@
     @apply text-primary-blue;
   }
 
-  input[type='radio']:focus + label {
+  input[type='radio']:focus-visible + label {
     @apply text-light-gray-500 dark:text-dark-gray-100;
   }
 }
