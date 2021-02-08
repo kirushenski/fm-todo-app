@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Seo from '@/components/Seo'
 import { ReactComponent as MoonIcon } from '@/icons/icon-moon.svg'
 import { ReactComponent as SunIcon } from '@/icons/icon-sun.svg'
 import TodoList from '@/components/TodoList'
+import { useColorScheme } from '@/components/ColorSchemeProvider'
 
 function IndexPage() {
-  const [colorScheme, setColorScheme] = useState('light')
+  const [colorScheme, setColorScheme] = useColorScheme()
 
   return (
-    <div className="min-h-screen px-6 py-12 bg-light-mobile dark:bg-dark-mobile sm:bg-light-desktop dark:sm:bg-dark-desktop bg-no-repeat bg-contain">
+    <div className="min-h-screen px-6 py-12 bg-light-mobile dark:bg-dark-mobile sm:bg-light-desktop sm:dark:bg-dark-desktop bg-no-repeat bg-contain">
       <Seo title="Frontend Mentor: Todo app" />
       <main className="max-w-container mx-auto">
         <div className="flex justify-between items-center mb-10">

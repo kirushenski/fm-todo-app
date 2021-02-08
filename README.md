@@ -12,3 +12,6 @@
 </p>
 
 For this challenge:
+
+1. Work with contenteditable element
+1. Learned how to simulate border gradient

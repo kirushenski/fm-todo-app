@@ -43,7 +43,10 @@ module.exports = {
     // Add aliases support with eslint-import-resolver-alias
     'import/resolver': {
       alias: {
-        map: [['@', './src']],
+        map: [
+          ['@', './src'],
+          ['@test-utils', './test/test-utils.tsx'],
+        ],
         extensions: ['.tsx', '.ts', '.js'],
       },
     },

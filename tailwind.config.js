@@ -68,6 +68,7 @@ module.exports = {
     extend: {
       textColor: ['focus-visible'],
       boxShadow: ['dark'],
+      backgroundImage: ['dark'],
     },
   },
 }

@@ -9,7 +9,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@test-utils": ["test/test-utils.tsx"]
     },
     "types": ["node", "jest", "testing-library__jest-dom"]
   }

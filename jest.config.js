@@ -5,6 +5,7 @@ module.exports = {
   moduleNameMapper: {
     '.+\\.(jpg|jpeg|png|webp|woff|woff2|mp4|webm|mp3|css)$': '<rootDir>/__mocks__/file.js',
     '.+\\.svg$': '<rootDir>/__mocks__/svgr.js',
+    '@test-utils': '<rootDir>/test/test-utils.tsx',
     '@/(.*)': '<rootDir>/src/$1',
   },
   // Ignore Gatsby tests directory in cache
