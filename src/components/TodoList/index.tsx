@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import useLocalStorage from '@/utils/useLocalStorage'
 import { ReactComponent as CheckIcon } from '@/icons/icon-check.svg'
 import { ReactComponent as CrossIcon } from '@/icons/icon-cross.svg'
 
-// TODO dark mode
-// TODO local storage
 // TODO алерты
 // TODO focus management on clear
 // TODO склонения к items
@@ -20,7 +19,7 @@ interface Todo {
 
 function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>) {
   const FILTERS = ['all', 'active', 'completed'] as const
-  const [todos, setTodos] = useState<Todo[]>([
+  const [todos, setTodos] = useLocalStorage<Todo[]>('todos', [
     { id: uuidv4(), value: 'Do the job right', isCompleted: false },
     { id: uuidv4(), value: 'Do the job right 2', isCompleted: true },
     { id: uuidv4(), value: 'Do the job right 3', isCompleted: false },
