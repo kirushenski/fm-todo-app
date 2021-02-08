@@ -19,7 +19,8 @@
 
   input:focus,
   button:focus,
-  [contenteditable]:focus {
+  [contenteditable]:focus,
+  [tabindex='-1'] {
     @apply outline-none;
   }
 

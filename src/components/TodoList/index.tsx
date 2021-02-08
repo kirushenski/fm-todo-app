@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import useLocalStorage from '@/utils/useLocalStorage'
 import { ReactComponent as CheckIcon } from '@/icons/icon-check.svg'
 import { ReactComponent as CrossIcon } from '@/icons/icon-cross.svg'
 
-// TODO алерты
-// TODO focus management on clear
 // TODO склонения к items
 // TODO DnD
 // TODO state management solutions
@@ -32,6 +30,9 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
       (currentFilter === 'active' && !todo.isCompleted) ||
       (currentFilter === 'completed' && todo.isCompleted)
   )
+  const [status, setStatus] = useState('')
+
+  const todoListRef = useRef<HTMLDivElement>(null)
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value)
@@ -42,6 +43,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
     if (!value.trim()) return
     setValue('')
     setTodos([...todos, { id: uuidv4(), value, isCompleted: false }])
+    setStatus(`"${value}" todo was added`)
   }
 
   function handleCheckboxChange(selectedTodo: Todo) {
@@ -54,10 +56,14 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
 
   function handleClearButtonClick(selectedTodo: Todo) {
     setTodos(todos.filter(todo => todo !== selectedTodo))
+    setStatus(`"${selectedTodo.value}" todo was removed`)
+    todoListRef.current?.focus()
   }
 
   function handleClearCompletedButtonClick() {
     setTodos(todos.filter(todo => !todo.isCompleted))
+    setStatus('All completed todos were removed')
+    todoListRef.current?.focus()
   }
 
   function handleTextChange(e: React.FocusEvent<HTMLDivElement>, selectedTodo: Todo) {
@@ -66,6 +72,9 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
 
   return (
     <div className={`${className}`} {...props}>
+      <div role="status" aria-live="polite" className="sr-only">
+        {status}
+      </div>
       <form onSubmit={handleSubmit} className="content-block mb-6">
         <label className="flex items-center">
           <span className="sr-only">Create a new todo</span>
@@ -81,7 +90,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
           />
         </label>
       </form>
-      <div className="content-block">
+      <div className="content-block" ref={todoListRef} tabIndex={-1}>
         {filteredTodos.length ? (
           <ol>
             {filteredTodos.map(todo => (
