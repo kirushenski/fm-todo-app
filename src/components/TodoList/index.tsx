@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { ReactComponent as CheckIcon } from '@/icons/icon-check.svg'
 import { ReactComponent as CrossIcon } from '@/icons/icon-cross.svg'
 
-// TODO склонения к items
 // TODO state management solutions
 // TODO performance optimization
 
@@ -24,13 +23,15 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
   ])
   const [value, setValue] = useState('')
   const [currentFilter, setCurrentFilter] = useState<typeof FILTERS[number]>('all')
+  const [status, setStatus] = useState('')
+
   const filteredTodos = todos.filter(
     todo =>
       currentFilter === 'all' ||
       (currentFilter === 'active' && !todo.isCompleted) ||
       (currentFilter === 'completed' && todo.isCompleted)
   )
-  const [status, setStatus] = useState('')
+  const activeTodosCount = todos.filter(todo => !todo.isCompleted).length
 
   const todoListRef = useRef<HTMLDivElement>(null)
 
@@ -163,7 +164,9 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
             </div>
           )}
           <nav className="flex flex-wrap sm:items-center justify-between sm:justify-start px-5 sm:px-6 text-xs sm:text-sm text-light-gray-400 dark:text-dark-gray-400">
-            <div className="pt-4 sm:pt-0 leading-none">{todos.filter(todo => !todo.isCompleted).length} items left</div>
+            <div className="pt-4 sm:pt-0 leading-none">
+              {activeTodosCount} item{activeTodosCount % 10 !== 1 ? 's' : ''} left
+            </div>
             <div className="order-2 sm:order-none flex-grow flex justify-center text-sm font-bold leading-none">
               {FILTERS.map(filter => (
                 <React.Fragment key={filter}>
