@@ -13,5 +13,6 @@
 
 For this challenge:
 
-1. Work with contenteditable element
-1. Learned how to simulate border gradient
+1. Learned DnD API and worked with react-beautiful-dnd for the first time
+1. Worked on accessibility via live regions
+1. Learned how to simulate border gradient (on checkboxes)

@@ -62,6 +62,11 @@ module.exports = {
       padding: {
         cross: '1.4375rem',
       },
+      outline: {
+        dnd: ['2px solid #494C6B', '-2px'],
+        'dnd-active': ['2px solid #3A7CFD', '-2px'],
+        'dnd-dark': ['2px solid #FFF', '-2px'],
+      },
     },
   },
   variants: {
@@ -69,6 +74,7 @@ module.exports = {
       textColor: ['focus-visible'],
       boxShadow: ['dark'],
       backgroundImage: ['dark'],
+      outline: ['dark'],
     },
   },
 }
