@@ -1,26 +1,13 @@
 import React, { useRef, useState } from 'react'
-import useLocalStorage from '@/utils/useLocalStorage'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
-import { v4 as uuidv4 } from 'uuid'
+import useLocalStorage from '@/utils/useLocalStorage'
+import todoListReducer, { Todo } from './reducer'
 import { ReactComponent as CheckIcon } from '@/icons/icon-check.svg'
 import { ReactComponent as CrossIcon } from '@/icons/icon-cross.svg'
 
-// TODO state management solutions
-// TODO performance optimization
-
-interface Todo {
-  id: string
-  value: string
-  isCompleted: boolean
-}
-
 function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>) {
   const FILTERS = ['all', 'active', 'completed'] as const
-  const [todos, setTodos] = useLocalStorage<Todo[]>('todos', [
-    { id: uuidv4(), value: 'Do the job right', isCompleted: false },
-    { id: uuidv4(), value: 'Do the job right 2', isCompleted: true },
-    { id: uuidv4(), value: 'Do the job right 3', isCompleted: false },
-  ])
+  const [todos, dispatch] = useLocalStorage('todos', todoListReducer, [])
   const [value, setValue] = useState('')
   const [currentFilter, setCurrentFilter] = useState<typeof FILTERS[number]>('all')
   const [status, setStatus] = useState('')
@@ -43,12 +30,12 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
     e.preventDefault()
     if (!value.trim()) return
     setValue('')
-    setTodos([...todos, { id: uuidv4(), value, isCompleted: false }])
+    dispatch({ type: 'ADD', payload: value })
     setStatus(`"${value}" todo was added`)
   }
 
   function handleCheckboxChange(selectedTodo: Todo) {
-    setTodos(todos.map(todo => (todo === selectedTodo ? { ...todo, isCompleted: !todo.isCompleted } : todo)))
+    dispatch({ type: 'TOGGLE', payload: selectedTodo.id })
     setStatus(`"${selectedTodo.value}" todo was marked as ${selectedTodo.isCompleted ? 'completed' : 'active'}`)
     todoListRef.current?.focus()
   }
@@ -58,13 +45,13 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
   }
 
   function handleClearButtonClick(selectedTodo: Todo) {
-    setTodos(todos.filter(todo => todo !== selectedTodo))
+    dispatch({ type: 'CLEAR', payload: selectedTodo.id })
     setStatus(`"${selectedTodo.value}" todo was removed`)
     todoListRef.current?.focus()
   }
 
   function handleClearCompletedButtonClick() {
-    setTodos(todos.filter(todo => !todo.isCompleted))
+    dispatch({ type: 'CLEAR_ALL_COMPLETED' })
     setStatus('All completed todos were removed')
     todoListRef.current?.focus()
   }
@@ -79,7 +66,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
     const newTodos = [...todos]
     newTodos.splice(sourceIndex, 1)
     newTodos.splice(destinationIndex, 0, todos[sourceIndex])
-    setTodos(newTodos)
+    dispatch({ type: 'REORDER', payload: { sourceIndex, destinationIndex } })
   }
 
   return (

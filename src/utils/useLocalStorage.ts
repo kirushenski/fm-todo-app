@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useReducer } from 'react'
 
-function useLocalStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(() => {
+function useLocalStorage<T, A>(key: string, reducer: (state: T, action: A) => T, initialValue: T) {
+  const [storedValue, dispatch] = useReducer(reducer, initialValue, () => {
     try {
       const item = window.localStorage.getItem(key)
       return item ? JSON.parse(item) : initialValue
@@ -11,17 +11,15 @@ function useLocalStorage<T>(key: string, initialValue: T) {
     }
   })
 
-  const setValue = (value: T | ((val: T) => T)) => {
+  useEffect(() => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value
-      setStoredValue(valueToStore)
-      window.localStorage.setItem(key, JSON.stringify(valueToStore))
+      window.localStorage.setItem(key, JSON.stringify(storedValue))
     } catch (error) {
       console.error(error)
     }
-  }
+  }, [key, storedValue])
 
-  return [storedValue, setValue] as [T, (value: T | ((val: T) => T)) => void]
+  return [storedValue, dispatch] as [T, React.Dispatch<A>]
 }
 
 export default useLocalStorage
