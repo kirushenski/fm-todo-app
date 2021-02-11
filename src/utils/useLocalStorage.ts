@@ -3,7 +3,7 @@ import { useEffect, useReducer } from 'react'
 function useLocalStorage<T, A>(key: string, reducer: (state: T, action: A) => T, initialValue: T) {
   const [storedValue, dispatch] = useReducer(reducer, initialValue, () => {
     try {
-      const item = window.localStorage.getItem(key)
+      const item = typeof window !== 'undefined' && window.localStorage.getItem(key)
       return item ? JSON.parse(item) : initialValue
     } catch (error) {
       console.error(error)

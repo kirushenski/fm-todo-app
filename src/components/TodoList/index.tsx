@@ -90,7 +90,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
             />
           </label>
         </form>
-        <div className="content-block" ref={todoListRef} tabIndex={-1}>
+        <div className="content-block outline-none" ref={todoListRef} tabIndex={-1}>
           {filteredTodos.length ? (
             <Droppable droppableId="list">
               {provided => (
