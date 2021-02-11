@@ -78,9 +78,9 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
         <form onSubmit={handleSubmit} className="content-block mb-6">
           <label className="flex items-center">
             <span className="sr-only">Create a new todo</span>
-            <div className="py-4 px-5 sm:py-5 sm:px-6">
-              <div className="circle" />
-            </div>
+            <span className="py-4 px-5 sm:py-5 sm:px-6">
+              <span className="circle" />
+            </span>
             <input
               type="text"
               value={value}
@@ -89,6 +89,9 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
               className="flex-grow py-4 pr-5 sm:py-5 sm:pr-6 text-dark-gray-700 dark:text-dark-gray-200 placeholder-light-gray-400 dark:placeholder-dark-gray-300 leading-6"
             />
           </label>
+          <button type="submit" hidden>
+            Submit
+          </button>
         </form>
         <div className="content-block outline-none" ref={todoListRef} tabIndex={-1}>
           {filteredTodos.length ? (
@@ -119,7 +122,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
                             <span className="sr-only">
                               {todo.isCompleted ? 'Activate' : 'Complete'} &quot;{todo.value}&quot;
                             </span>
-                            <div className="circle">{todo.isCompleted && <CheckIcon />}</div>
+                            <span className="circle">{todo.isCompleted && <CheckIcon />}</span>
                           </label>
                           <div
                             className={`py-4 sm:py-5 flex-grow leading-6 ${
