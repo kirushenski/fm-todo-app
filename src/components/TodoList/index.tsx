@@ -116,7 +116,9 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
                             className="sr-only"
                           />
                           <label htmlFor={todo.id} className="py-4 px-5 sm:py-5 sm:px-6 text-check cursor-pointer">
-                            <span className="sr-only">Complete &quot;{todo.value}&quot;</span>
+                            <span className="sr-only">
+                              {todo.isCompleted ? 'Activate' : 'Complete'} &quot;{todo.value}&quot;
+                            </span>
                             <div className="circle">{todo.isCompleted && <CheckIcon />}</div>
                           </label>
                           <div
