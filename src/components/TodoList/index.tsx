@@ -2,12 +2,14 @@ import React, { useCallback, useState } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import useLocalStorage from '@/utils/useLocalStorage'
 import TodoItem, { Todo } from '@/components/TodoItem'
+import Input from '@/components/Input'
+import NavPanel from '@/components/NavPanel'
 import todoListReducer from './reducer'
 
+export const FILTERS = ['all', 'active', 'completed'] as const
+
 function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>) {
-  const FILTERS = ['all', 'active', 'completed'] as const
   const [todos, dispatch] = useLocalStorage('todos', todoListReducer, [])
-  const [value, setValue] = useState('')
   const [currentFilter, setCurrentFilter] = useState<typeof FILTERS[number]>('all')
   const [status, setStatus] = useState('')
 
@@ -19,20 +21,9 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
   )
   const activeTodosCount = todos.filter(todo => !todo.isCompleted).length
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value)
-  }
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    if (!value.trim()) return
-    setValue('')
+  function handleSubmit(value: string) {
     dispatch({ type: 'ADD', payload: value })
     setStatus(`"${value}" todo was added`)
-  }
-
-  function handleFilterChange(selectedFilter: typeof FILTERS[number]) {
-    setCurrentFilter(selectedFilter)
   }
 
   const handleCheckboxChange = useCallback(
@@ -50,6 +41,10 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
     },
     [dispatch]
   )
+
+  function handleFilterChange(selectedFilter: typeof FILTERS[number]) {
+    setCurrentFilter(selectedFilter)
+  }
 
   function handleClearCompletedButtonClick() {
     dispatch({ type: 'CLEAR_ALL_COMPLETED' })
@@ -75,24 +70,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
         <div role="status" aria-live="polite" className="sr-only">
           {status}
         </div>
-        <form onSubmit={handleSubmit} className="content-block mb-6">
-          <label className="flex items-center">
-            <span className="sr-only">Create a new todo</span>
-            <span className="py-4 px-5 sm:py-5 sm:px-6">
-              <span className="circle" />
-            </span>
-            <input
-              type="text"
-              value={value}
-              onChange={handleInputChange}
-              placeholder="Create a new todo..."
-              className="flex-grow py-4 pr-5 sm:py-5 sm:pr-6 text-dark-gray-700 dark:text-dark-gray-200 placeholder-light-gray-400 dark:placeholder-dark-gray-300 leading-6"
-            />
-          </label>
-          <button type="submit" hidden>
-            Submit
-          </button>
-        </form>
+        <Input onSubmit={handleSubmit} />
         <div className="content-block outline-none" tabIndex={-1}>
           {filteredTodos.length ? (
             <Droppable droppableId="list">
@@ -125,39 +103,12 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
                 : 'any todos. Try to add one!'}
             </div>
           )}
-          <nav className="flex flex-wrap sm:items-center justify-between sm:justify-start px-5 sm:px-6 text-xs sm:text-sm text-light-gray-400 dark:text-dark-gray-400">
-            <div className="pt-4 sm:pt-0 leading-none">
-              {activeTodosCount} item{activeTodosCount % 10 !== 1 ? 's' : ''} left
-            </div>
-            <div className="order-2 sm:order-none flex-grow flex justify-center text-sm font-bold leading-none">
-              {FILTERS.map(filter => (
-                <React.Fragment key={filter}>
-                  <input
-                    type="radio"
-                    name="filter"
-                    id={filter}
-                    value={filter}
-                    checked={filter === currentFilter}
-                    onChange={() => handleFilterChange(filter)}
-                    className="sr-only"
-                  />
-                  <label
-                    htmlFor={filter}
-                    className="block px-2 pt-4 pb-5 hover:text-light-gray-500 dark:hover:text-dark-gray-100 cursor-pointer transition-colors"
-                  >
-                    {filter[0].toUpperCase()}
-                    {filter.slice(1)}
-                  </label>
-                </React.Fragment>
-              ))}
-            </div>
-            <button
-              onClick={handleClearCompletedButtonClick}
-              className="order-1 sm:order-none pb-2 pt-4 sm:pb-5 hover:text-light-gray-500 focus-visible:text-light-gray-500 dark:hover:text-dark-gray-100 leading-none transition-colors"
-            >
-              Clear Completed
-            </button>
-          </nav>
+          <NavPanel
+            activeTodosCount={activeTodosCount}
+            currentFilter={currentFilter}
+            handleFilterChange={handleFilterChange}
+            handleClearCompletedButtonClick={handleClearCompletedButtonClick}
+          />
         </div>
       </div>
     </DragDropContext>
