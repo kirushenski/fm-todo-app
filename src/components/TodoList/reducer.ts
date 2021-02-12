@@ -1,10 +1,5 @@
 import { v4 as uuid } from 'uuid'
-
-export interface Todo {
-  id: string
-  value: string
-  isCompleted: boolean
-}
+import { Todo } from '@/components/TodoItem'
 
 type ACTIONTYPE =
   | { type: 'ADD'; payload: string }

@@ -1,9 +1,8 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import useLocalStorage from '@/utils/useLocalStorage'
-import todoListReducer, { Todo } from './reducer'
-import { ReactComponent as CheckIcon } from '@/icons/icon-check.svg'
-import { ReactComponent as CrossIcon } from '@/icons/icon-cross.svg'
+import TodoItem, { Todo } from '@/components/TodoItem'
+import todoListReducer from './reducer'
 
 function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>) {
   const FILTERS = ['all', 'active', 'completed'] as const
@@ -34,21 +33,27 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
     setStatus(`"${value}" todo was added`)
   }
 
-  function handleCheckboxChange(selectedTodo: Todo) {
-    dispatch({ type: 'TOGGLE', payload: selectedTodo.id })
-    setStatus(`"${selectedTodo.value}" todo was marked as ${selectedTodo.isCompleted ? 'completed' : 'active'}`)
-    todoListRef.current?.focus()
-  }
-
   function handleFilterChange(selectedFilter: typeof FILTERS[number]) {
     setCurrentFilter(selectedFilter)
   }
 
-  function handleClearButtonClick(selectedTodo: Todo) {
-    dispatch({ type: 'CLEAR', payload: selectedTodo.id })
-    setStatus(`"${selectedTodo.value}" todo was removed`)
-    todoListRef.current?.focus()
-  }
+  const handleCheckboxChange = useCallback(
+    (selectedTodo: Todo) => {
+      dispatch({ type: 'TOGGLE', payload: selectedTodo.id })
+      setStatus(`"${selectedTodo.value}" todo was marked as ${selectedTodo.isCompleted ? 'completed' : 'active'}`)
+      todoListRef.current?.focus()
+    },
+    [dispatch]
+  )
+
+  const handleClearButtonClick = useCallback(
+    (selectedTodo: Todo) => {
+      dispatch({ type: 'CLEAR', payload: selectedTodo.id })
+      setStatus(`"${selectedTodo.value}" todo was removed`)
+      todoListRef.current?.focus()
+    },
+    [dispatch]
+  )
 
   function handleClearCompletedButtonClick() {
     dispatch({ type: 'CLEAR_ALL_COMPLETED' })
@@ -101,43 +106,13 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
                   {filteredTodos.map((todo, index) => (
                     <Draggable key={todo.id} draggableId={todo.id} index={index}>
                       {(provided, snapshot) => (
-                        <li
-                          ref={provided.innerRef}
-                          className={`group border-b border-light-gray-200 dark:border-dark-gray-700 flex items-center ${
-                            snapshot.isDragging
-                              ? 'focus:outline-dnd-active'
-                              : 'focus:outline-dnd dark:focus:outline-dnd-dark'
-                          }`}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <input
-                            type="checkbox"
-                            id={todo.id}
-                            checked={todo.isCompleted}
-                            onChange={() => handleCheckboxChange(todo)}
-                            className="sr-only"
-                          />
-                          <label htmlFor={todo.id} className="py-4 px-5 sm:py-5 sm:px-6 text-check cursor-pointer">
-                            <span className="sr-only">
-                              {todo.isCompleted ? 'Activate' : 'Complete'} &quot;{todo.value}&quot;
-                            </span>
-                            <span className="circle">{todo.isCompleted && <CheckIcon />}</span>
-                          </label>
-                          <div
-                            className={`py-4 sm:py-5 flex-grow leading-6 ${
-                              todo.isCompleted ? 'line-through text-light-gray-300 dark:text-dark-gray-500' : ''
-                            }`}
-                          >
-                            {todo.value}
-                          </div>
-                          <button
-                            onClick={() => handleClearButtonClick(todo)}
-                            className="py-5 sm:py-cross px-5 sm:px-6 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity dark:text-dark-gray-400"
-                          >
-                            <CrossIcon title={`Clear "${todo.value}"`} />
-                          </button>
-                        </li>
+                        <TodoItem
+                          todo={todo}
+                          provided={provided}
+                          snapshot={snapshot}
+                          handleCheckboxChange={handleCheckboxChange}
+                          handleClearButtonClick={handleClearButtonClick}
+                        />
                       )}
                     </Draggable>
                   ))}
