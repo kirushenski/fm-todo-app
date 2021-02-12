@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import useLocalStorage from '@/utils/useLocalStorage'
 import TodoItem, { Todo } from '@/components/TodoItem'
@@ -18,8 +18,6 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
       (currentFilter === 'completed' && todo.isCompleted)
   )
   const activeTodosCount = todos.filter(todo => !todo.isCompleted).length
-
-  const todoListRef = useRef<HTMLDivElement>(null)
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value)
@@ -41,7 +39,6 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
     (selectedTodo: Todo) => {
       dispatch({ type: 'TOGGLE', payload: selectedTodo.id })
       setStatus(`"${selectedTodo.value}" todo was marked as ${selectedTodo.isCompleted ? 'completed' : 'active'}`)
-      todoListRef.current?.focus()
     },
     [dispatch]
   )
@@ -50,7 +47,6 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
     (selectedTodo: Todo) => {
       dispatch({ type: 'CLEAR', payload: selectedTodo.id })
       setStatus(`"${selectedTodo.value}" todo was removed`)
-      todoListRef.current?.focus()
     },
     [dispatch]
   )
@@ -58,7 +54,6 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
   function handleClearCompletedButtonClick() {
     dispatch({ type: 'CLEAR_ALL_COMPLETED' })
     setStatus('All completed todos were removed')
-    todoListRef.current?.focus()
   }
 
   function handleDragEnd(result: DropResult) {
@@ -98,7 +93,7 @@ function TodoList({ className = '', ...props }: React.HTMLProps<HTMLDivElement>)
             Submit
           </button>
         </form>
-        <div className="content-block outline-none" ref={todoListRef} tabIndex={-1}>
+        <div className="content-block outline-none" tabIndex={-1}>
           {filteredTodos.length ? (
             <Droppable droppableId="list">
               {provided => (
